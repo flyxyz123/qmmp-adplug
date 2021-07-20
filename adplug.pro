@@ -1,6 +1,6 @@
-include(../../plugins.pri)
-
-TARGET = $$PLUGINS_PREFIX/Input/adplug
+# references:
+# https://github.com/cspiegel/qmmp-adplug
+# https://github.com/cspiegel/qmmp-openmpt
 
 HEADERS += decoderadplugfactory.h \
            decoder_adplug.h \
@@ -14,11 +14,25 @@ SOURCES += decoderadplugfactory.cpp \
            adplugmetadatamodel.cpp \
            magic.cpp
 
+CONFIG += warn_on plugin link_pkgconfig
+
+TEMPLATE = lib
+
+QMAKE_CLEAN += lib$${TARGET}.so
+
 unix {
-  target.path = $$PLUGIN_DIR/Input
-  INSTALLS += target
-  PKGCONFIG += libadplug
-  QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libadplug.so
+	CONFIG += link_pkgconfig
+	PKGCONFIG += qmmp adplug
+	
+	QMMP_PREFIX = $$system(pkg-config qmmp --variable=prefix)
+	PLUGIN_DIR = $$system(pkg-config qmmp --variable=plugindir)/Input
+	LOCAL_INCLUDES = $${QMMP_PREFIX}/include
+	LOCAL_INCLUDES -= $$QMAKE_DEFAULT_INCDIRS
+	INCLUDEPATH += $$LOCAL_INCLUDES
+	
+	plugin.path = $${PLUGIN_DIR}
+	plugin.files = lib$${TARGET}.so
+	INSTALLS += plugin
 }
 
 win32 {
