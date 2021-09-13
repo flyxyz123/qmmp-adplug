@@ -4,8 +4,6 @@
 #include "adplugmetadatamodel.h"
 #include "magic.h"
 
-//#include <QMessageBox>
-
 class InputStreamQIO : public InputStream
 {
 public:
@@ -122,9 +120,6 @@ void DecoderAdplugFactory::showSettings(QWidget *parent)
 
 void DecoderAdplugFactory::showAbout(QWidget *parent)
 {
-//    QMessageBox::about (parent, tr("About Adplug Reader Plugin"),
-//                        tr("Qmmp Adplug Reader Plugin")+"\n"+
-//                        tr("Written by: Greedysky <greedysky@163.com>"));
 }
 
 QString DecoderAdplugFactory::translation() const
