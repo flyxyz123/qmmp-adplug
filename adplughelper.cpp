@@ -1,24 +1,23 @@
 #include "adplughelper.h"
 
-#include <QFileInfo>
+#include <qmmp/qmmp.h>
 
 AdplugHelper::AdplugHelper(const QString &path)
     : m_path(path)
 {
-    m_opl = new CEmuopl(rate(), true, false);
+    m_opl = new CEmuopl(sampleRate(), true, false);
     m_player = CAdPlug::factory(qPrintable(path), m_opl);
 }
 
 AdplugHelper::~AdplugHelper()
 {
-    delete m_opl;
-    delete m_player;
+    deinit();
 }
 
 AdplugHelper::Frame AdplugHelper::read()
 {
     size_t to_write;
-    size_t bufsiz = sizeof(m_buf) / sizeof(*m_buf);
+    const size_t bufsiz = sizeof(m_buf) / sizeof(*m_buf);
 
     if(m_remaining == 0)
     {
@@ -26,39 +25,28 @@ AdplugHelper::Frame AdplugHelper::read()
         {
             return Frame(0, nullptr);
         }
-        m_remaining = rate() / m_player->getrefresh();
+        m_remaining = sampleRate() / m_player->getrefresh();
     }
 
-    if(m_remaining > bufsiz)
-    {
-        to_write = bufsiz;
-    }
-    else
-    {
-        to_write = m_remaining;
-    }
-
+    to_write = m_remaining > bufsiz ? bufsiz : m_remaining;
     m_opl->update(m_buf, to_write);
     m_remaining -= to_write;
     return Frame(to_write * 2, reinterpret_cast<unsigned char *>(m_buf));
 }
 
-bool AdplugHelper::initialize()
+void AdplugHelper::deinit()
 {
-    return m_player;
+    delete m_opl;
+    delete m_player;
 }
 
-int AdplugHelper::bitrate() const
+QString AdplugHelper::instruments() const
 {
-    return QFileInfo(m_path).size() * 8.0 / length() + 1.0f;
-}
-
-QStringList AdplugHelper::instruments() const
-{
-    QStringList insts;
-    for(unsigned int i = 0; i < instrumentCount(); i++)
+    QString value;
+    for(unsigned int i = 0; i < instrumentCount(); ++i)
     {
-        insts << QString::fromStdString(m_player->getinstrument(i));
+        value += QString::fromStdString(m_player->getinstrument(i));
+        value += "\n";
     }
-    return insts;
+    return value;
 }

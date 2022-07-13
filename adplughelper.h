@@ -1,6 +1,6 @@
-/* =================================================
+/***************************************************************************
  * This file is part of the TTK qmmp plugin project
- * Copyright (C) 2015 - 2021 Greedysky Studio
+ * Copyright (C) 2015 - 2022 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,19 @@
 
  * You should have received a copy of the GNU General Public License along
  * with this program; If not, see <http://www.gnu.org/licenses/>.
- ================================================= */
+ ***************************************************************************/
 
 #ifndef ADPLUGHELPER_H
 #define ADPLUGHELPER_H
 
+#include <QFile>
 #include <QStringList>
 #include <adplug/adplug.h>
 #include <adplug/emuopl.h>
 
-/**
-   @author Ilya Kotov <forkotov02@ya.ru>
-*/
+/*!
+ * @author Greedysky <greedysky@163.com>
+ */
 class AdplugHelper
 {
 public:
@@ -45,15 +46,16 @@ public:
     explicit AdplugHelper(const QString &path);
     ~AdplugHelper();
 
-    bool initialize();
+    void deinit();
+    inline bool initialize() { return m_player; }
 
-    int bitrate() const;
-    inline int rate() const { return 44100; }
-    inline int depth() const { return 16; }
+    inline void seek(qint64 time) const { m_player->seek(time); }
+    inline qint64 totalTime() const { return m_player->songlength(); }
+
+    inline int bitrate() const { return 8; }
+    inline int sampleRate() const { return 44100; }
     inline int channels() const { return 1; }
-
-    inline qint64 length() const { return m_player->songlength(); }
-    inline void seek(qint64 pos) const { m_player->seek(pos); }
+    inline int depth() const { return 16; }
 
     Frame read();
 
@@ -64,7 +66,7 @@ public:
     inline unsigned int patternCount() const { return m_player->getpatterns(); }
     inline unsigned int instrumentCount() const { return m_player->getinstruments(); }
 
-    QStringList instruments() const;
+    QString instruments() const;
 
 private:
     QString m_path;

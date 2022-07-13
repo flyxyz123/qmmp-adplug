@@ -1,6 +1,6 @@
-/* =================================================
+/***************************************************************************
  * This file is part of the TTK qmmp plugin project
- * Copyright (C) 2015 - 2021 Greedysky Studio
+ * Copyright (C) 2015 - 2022 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,25 +14,29 @@
 
  * You should have received a copy of the GNU General Public License along
  * with this program; If not, see <http://www.gnu.org/licenses/>.
- ================================================= */
+ ***************************************************************************/
 
 #ifndef DECODER_ADPLUG_H
 #define DECODER_ADPLUG_H
 
-#include "adplughelper.h"
 #include <qmmp/decoder.h>
 
+class AdplugHelper;
+
+/*!
+ * @author Greedysky <greedysky@163.com>
+ */
 class DecoderAdplug : public Decoder
 {
 public:
     explicit DecoderAdplug(const QString &path);
     virtual ~DecoderAdplug();
 
-    virtual bool initialize() override;
-    virtual qint64 totalTime() const override;
-    virtual int bitrate() const override;
-    virtual qint64 read(unsigned char *data, qint64 maxSize) override;
-    virtual void seek(qint64 time) override;
+    virtual bool initialize() override final;
+    virtual qint64 totalTime() const override final;
+    virtual int bitrate() const override final;
+    virtual qint64 read(unsigned char *data, qint64 maxSize) override final;
+    virtual void seek(qint64 time) override final;
 
 private:
     qint64 copy(unsigned char *data, qint64 maxSize);

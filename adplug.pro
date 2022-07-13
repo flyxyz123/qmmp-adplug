@@ -5,14 +5,12 @@
 HEADERS += decoderadplugfactory.h \
            decoder_adplug.h \
            adplughelper.h \
-           adplugmetadatamodel.h \
-           magic.h
+           adplugmetadatamodel.h
 
 SOURCES += decoderadplugfactory.cpp \
            decoder_adplug.cpp \
            adplughelper.cpp \
-           adplugmetadatamodel.cpp \
-           magic.cpp
+           adplugmetadatamodel.cpp
 
 CONFIG += warn_on plugin link_pkgconfig
 
@@ -36,5 +34,5 @@ unix {
 }
 
 win32 {
-    LIBS += -ladplug -lbinio
+	LIBS += -ladplug -lbinio
 }
