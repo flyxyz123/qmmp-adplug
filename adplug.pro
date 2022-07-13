@@ -32,7 +32,3 @@ unix {
 	plugin.files = lib$${TARGET}.so
 	INSTALLS += plugin
 }
-
-win32 {
-	LIBS += -ladplug -lbinio
-}
